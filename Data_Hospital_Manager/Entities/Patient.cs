@@ -27,5 +27,6 @@ namespace Data_Hospital_Manager.Entities
         [Required]
         [Phone]
         public string PhoneNumber { get; set; }
+        public ICollection<DoctorPatient> DoctorsPatients { get; set; } = new List<DoctorPatient>();
     }
 }

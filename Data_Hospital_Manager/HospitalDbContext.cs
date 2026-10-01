@@ -20,7 +20,12 @@ namespace Data_Hospital_Manager
         public DbSet<Doctor> Doctors { get; set; }
 
         public DbSet<Patient> Patients { get; set; }
-
+        public DbSet<DoctorPatient> DoctorsPatients { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<DoctorPatient>().HasKey(dp => new {  dp.DoctorId, dp.PatientId });
+        }
 
     }
 }

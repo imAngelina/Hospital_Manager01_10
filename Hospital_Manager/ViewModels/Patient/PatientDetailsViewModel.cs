@@ -13,5 +13,6 @@ namespace Hospital_Manager.ViewModels.Patient
         public string Email { get; set; }
 
         public string PhoneNumber { get; set; }
+        public string DoctorName { get; set; }
     }
 }
