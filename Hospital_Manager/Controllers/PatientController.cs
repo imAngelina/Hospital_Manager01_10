@@ -1,4 +1,5 @@
 ﻿using Data_Hospital_Manager;
+using Data_Hospital_Manager.Entities;
 using Hospital_Manager.ViewModels.Patient;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -54,6 +55,65 @@ namespace Hospital_Manager.Controllers
             };
             return View(model);
         }
+
+        public async Task<IActionResult> Create()
+        {
+            await LoadDoctors();
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> Create(PatientCreateViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var patient = new Patient
+                {
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    Email = model.Email,
+                    PhoneNumber = model.PhoneNumber
+                };
+                foreach (var doctorid in model.DosctorIds)
+                {
+                    patient.DoctorsPatients.Add(new DoctorPatient
+                    {
+                        DoctorId = doctorid
+                    });
+                }
+                context.Patients.Add(patient);
+                await context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            await LoadDoctors(model.DosctorIds);
+            return View(model);
+        }
+
+        public async Task<IActionResult> Edit(int id)
+        {
+            var patient = await context.Patients.Include(p => p.DoctorsPatients).ThenInclude(dp => dp.Doctor).FirstOrDefaultAsync(p => p.Id == id);
+
+            if (patient == null)
+            {
+                return NotFound();
+            }
+
+            var model = new PatientEditViewModel
+            {
+                Id = patient.Id,
+                FirstName = patient.FirstName,
+                LastName = patient.LastName,
+                Email = patient.Email,
+                PhoneNumber = patient.PhoneNumber,
+                DosctorIds = patient.DoctorsPatients.Select(dp => dp.DoctorId).ToList()
+            };
+            await LoadDoctors(model.DosctorIds);
+            return View(model);
+        }
+
+
+
+
+
         private async Task LoadDoctors(List<int> selectedDoctors = null)
         {
             var doctors = await context.Doctors.Select(d=> new
