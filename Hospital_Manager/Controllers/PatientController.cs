@@ -13,7 +13,7 @@ namespace Hospital_Manager.Controllers
 
         public PatientController(HospitalDbContext context)
         {
-            context = context;
+            this.context = context;
         }
 
         public async Task<IActionResult> Index()
@@ -110,6 +110,84 @@ namespace Hospital_Manager.Controllers
             return View(model);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Edit(int id, PatientEditViewModel model)
+        {
+            if (id != model.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                var patient = await context.Patients
+                    .Include(p => p.DoctorsPatients)
+                    .FirstOrDefaultAsync(p => p.Id == id);
+
+                if (patient == null)
+                {
+                    return NotFound();
+                }
+
+                patient.FirstName = model.FirstName;
+                patient.LastName = model.LastName;
+                patient.Email = model.Email;
+                patient.PhoneNumber = model.PhoneNumber;
+
+                patient.DoctorsPatients.Clear();
+
+                foreach (var doctorId in model.DosctorIds)
+                {
+                    patient.DoctorsPatients.Add(new DoctorPatient
+                    {
+                        DoctorId = doctorId
+                    });
+                }
+
+                await context.SaveChangesAsync();
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            await LoadDoctors(model.DosctorIds);
+
+            return View(model);
+        }
+      
+        public async Task<IActionResult> Delete(int id)
+        {
+            var patient = await context.Patients
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            if (patient == null)
+            {
+                return NotFound();
+            }
+            var model = new PatientDeleteViewModel
+            {
+                Id = patient.Id,
+                FirstName = patient.FirstName,
+                LastName = patient.LastName
+            };
+            return View(model);
+        }
+        [HttpPost, ActionName("Delete")]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var patient = await context.Patients
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            if (patient == null)
+            {
+                return NotFound();
+            }
+
+            context.Patients.Remove(patient);
+
+            await context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
 
 
 

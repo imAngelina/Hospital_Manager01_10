@@ -42,7 +42,7 @@ namespace Hospital_Manager.Controllers
         public async Task<IActionResult> Details(int id)
         {
             var doctor = await context.Doctors
-                .Include(d => d.Hospital)
+                .Include(d => d.Hospital).Include(d => d.DoctorsPatients).ThenInclude(x=>x.Patient)
                 .FirstOrDefaultAsync(d => d.Id == id);
 
             if (doctor == null)
@@ -58,7 +58,8 @@ namespace Hospital_Manager.Controllers
                 Specialty = doctor.Specialty,
                 Email = doctor.Email,
                 PhoneNumber = doctor.PhoneNumber,
-                HospitalName = doctor.Hospital.Name
+                HospitalName = doctor.Hospital.Name,
+                Patients = doctor.DoctorsPatients.Select(d => d.Patient.FirstName+" "+d.Patient.LastName).ToList()
             };
 
             return View(model);
