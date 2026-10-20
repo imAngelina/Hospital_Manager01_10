@@ -1,4 +1,6 @@
 using Data_Hospital_Manager;
+using HospitalManagerServices.Interfaces;
+using HospitalManagerServices.Services;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -11,6 +13,9 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<HospitalDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddScoped<IHospitalService, HospitalService>();
+builder.Services.AddScoped<IDoctorService, DoctorService>();
+builder.Services.AddScoped<IPatientService, PatientService>();
 
 var app = builder.Build();
 

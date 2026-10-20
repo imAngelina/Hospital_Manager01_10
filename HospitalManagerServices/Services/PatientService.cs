@@ -1,5 +1,6 @@
 ﻿using Data_Hospital_Manager;
 using Data_Hospital_Manager.Entities;
+using HospitalManagerServices.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace HospitalManagerServices.Services
 {
-    public class PatientService
+    public class PatientService:IPatientService
     {
         private readonly HospitalDbContext new_context;
 
@@ -60,6 +61,16 @@ namespace HospitalManagerServices.Services
         public async Task<Patient?> GetPatientWithDoctorsAsync(int id)
         {
             return await new_context.Patients.Include(x => x.DoctorsPatients).ThenInclude(x => x.Doctor).FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        public Task AddPatientAsync(Hospital hospital)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task UpdatePatientAsync(Hospital hospital, List<int> doctorIds)
+        {
+            throw new NotImplementedException();
         }
     }
 }
