@@ -19,14 +19,20 @@ namespace HospitalManagerServices.Services
             new_context=context;
         }
 
-        public Task AddHospitalAsync(Hospital hospital)
+        public async Task AddHospitalAsync(Hospital hospital)
         {
-            throw new NotImplementedException();
+            new_context.Hospitals.Add(hospital);
+            await new_context.SaveChangesAsync();
         }
 
-        public Task DeleteHospitalAsync(int id)
+        public async Task DeleteHospitalAsync(int id)
         {
-            throw new NotImplementedException();
+            var hospital = await new_context.Hospitals.FindAsync(id);
+            if(hospital == null)
+            {
+                hospital.IsDeleted = true;
+                await new_context.SaveChangesAsync();
+            }
         }
 
         public async Task<List<Hospital>> GetAllHospitalsAsync()
@@ -34,14 +40,14 @@ namespace HospitalManagerServices.Services
             return await new_context.Hospitals.Where(x=>!x.IsDeleted).ToListAsync();
         }
 
-        public Task<Hospital?> GetHospitalByIdAsync(int id)
+        public async Task<Hospital?> GetHospitalByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await new_context.Hospitals.FindAsync(id);
         }
 
-        public Task UpdateHospitalAsync(Hospital hospital)
+        public async Task UpdateHospitalAsync(Hospital hospital)
         {
-            throw new NotImplementedException();
+            await new_context.SaveChangesAsync();
         }
     }
 }
