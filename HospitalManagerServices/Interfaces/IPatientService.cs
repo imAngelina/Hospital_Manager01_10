@@ -12,8 +12,8 @@ namespace HospitalManagerServices.Interfaces
         Task<List<Patient>> GetAllPatientsAsync();
         Task<Patient?> GetPatientByIdAsync(int id);
         Task<Patient?> GetPatientWithDoctorsAsync(int id);
-        Task AddPatientAsync(Hospital hospital);
-        Task UpdatePatientAsync(Hospital hospital, List<int> doctorIds);
+        Task AddPatientAsync(Patient p);
+        Task UpdatePatientAsync(Patient p, List<int> doctorIds);
         Task DeletePatientAsync(int id);
     }
 }

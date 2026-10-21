@@ -27,7 +27,7 @@ namespace HospitalManagerServices.Services
         public async Task DeleteDoctorAsync(int id)
         {
             var doctor = await new_context.Doctors.Include(x=>x.DoctorsPatients).FirstOrDefaultAsync(x=>x.Id==id);
-            if (doctor == null)
+            if (doctor != null)
             {
                 new_context.DoctorsPatients.RemoveRange(doctor.DoctorsPatients);
                 new_context.Doctors.Remove(doctor);
@@ -54,14 +54,6 @@ namespace HospitalManagerServices.Services
             return await new_context.Doctors.Include(x=>x.Hospital).Include(x=>x.DoctorsPatients).ThenInclude(x=>x.Patient).FirstOrDefaultAsync(x=>x.Id==id);
         }
 
-        public Task AddDoctorAsync(Hospital hospital)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task UpdateDoctorAsync(Hospital hospital)
-        {
-            throw new NotImplementedException();
-        }
+       
     }
 }

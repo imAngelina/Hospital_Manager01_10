@@ -28,7 +28,7 @@ namespace HospitalManagerServices.Services
         public async Task DeleteHospitalAsync(int id)
         {
             var hospital = await new_context.Hospitals.FindAsync(id);
-            if(hospital == null)
+            if(hospital != null)
             {
                 hospital.IsDeleted = true;
                 await new_context.SaveChangesAsync();
