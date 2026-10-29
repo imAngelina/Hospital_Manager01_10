@@ -1,4 +1,5 @@
-﻿using Data_Hospital_Manager.Entities;
+﻿using Data_Hospital_Manager.Configurations;
+using Data_Hospital_Manager.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -28,6 +29,8 @@ namespace Data_Hospital_Manager
 
             modelBuilder.Entity<DoctorPatient>().HasOne(d=>d.Doctor).WithMany(x=>x.DoctorsPatients).HasForeignKey(x=>x.DoctorId).OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<DoctorPatient>().HasOne(d=>d.Patient).WithMany(x=>x.DoctorsPatients).HasForeignKey(x=>x.PatientId).OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.ApplyConfiguration(new HospitalConfiguration());
         }
 
     }
