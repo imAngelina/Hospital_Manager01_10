@@ -27,7 +27,7 @@ namespace Data_Hospital_Manager.Configurations
                 },
                 new Hospital
                 {
-                    Id = 1,
+                    Id = 2,
                     Name = "umbal st zagora",
                     Address = "stara zagora",
                     Email = "tgerv@fw.hv",
