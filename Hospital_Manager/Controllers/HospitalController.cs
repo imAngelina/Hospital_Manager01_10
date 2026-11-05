@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Hospital_Manager.ViewModels.Hospital;
 using HospitalManagerServices.Interfaces;
+using Microsoft.AspNetCore.Mvc.ViewComponents;
 
 namespace Hospital_Manager.Controllers
 {
@@ -20,11 +21,11 @@ namespace Hospital_Manager.Controllers
 
         
             
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? search, int? minBeds, string? sortOreder)
         {
-            var hospitals = await hospitalService.GetAllHospitalsAsync();
+            var hospitals = await hospitalService.GetAllHospitalsAsync(search,minBeds,sortOreder);
 
-            var model = new List<HospitalIndexViewModel>();//празен списък за ViewModel-ите
+            var model = new List<HospitalIndexViewModel>(); //празен списък за ViewModel-ите
 
             foreach (var hospital in hospitals)
             {
@@ -38,6 +39,9 @@ namespace Hospital_Manager.Controllers
                     BedsCount = hospital.BedsCount
                 });
             }
+            ViewBag.Search = search;
+            ViewBag.MinBeds = minBeds;
+            ViewBag.SortOreder = sortOreder;
 
             return View(model);//Изпращаме списъка към View
         }
