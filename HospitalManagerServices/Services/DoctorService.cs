@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace HospitalManagerServices.Services
 {
-    public class DoctorService:IDoctorService
+    public class DoctorService : IDoctorService
     {
         private readonly HospitalDbContext new_context;
 
@@ -26,7 +26,7 @@ namespace HospitalManagerServices.Services
 
         public async Task DeleteDoctorAsync(int id)
         {
-            var doctor = await new_context.Doctors.Include(x=>x.DoctorsPatients).FirstOrDefaultAsync(x=>x.Id==id);
+            var doctor = await new_context.Doctors.Include(x => x.DoctorsPatients).FirstOrDefaultAsync(x => x.Id == id);
             if (doctor != null)
             {
                 new_context.DoctorsPatients.RemoveRange(doctor.DoctorsPatients);
@@ -35,9 +35,30 @@ namespace HospitalManagerServices.Services
             }
         }
 
-        public async Task<List<Doctor>> GetAllDoctorsAsync()
+        public async Task<List<Doctor>> GetAllDoctorsAsync(string? search, string? speciality, string? sortOreder)
         {
-            return await new_context.Doctors.Include(x=>x.Hospital).ToListAsync();
+            var query = new_context.Doctors.Include(x => x.Hospital).Where(d => true);
+
+            if (!string.IsNullOrWhiteSpace(search))
+                query = query.Where(h => h.FirstName.Contains(search) || h.LastName.Contains(search));
+            if (!string.IsNullOrWhiteSpace(speciality))
+                query = query.Where(x => x.Specialty.Contains(speciality));
+            switch (sortOreder)
+            {
+                case "name_asc":
+                    query = query.OrderBy(x => x.FirstName).ThenBy(x=>x.LastName);
+                    break;
+                case "name_desc":
+                    query = query.OrderByDescending(x => x.FirstName).ThenByDescending(x => x.LastName);
+                    break;
+                case "speciality":
+                    query = query.OrderBy(x => x.Specialty).ThenBy(x => x.FirstName);
+                    break;
+                default:
+                    query = query.OrderBy(x => x.FirstName).ThenBy(x => x.LastName);
+                    break;
+            }
+            return await query.ToListAsync();
         }
 
         public async Task<Doctor?> GetDoctorByIdAsync(int id)

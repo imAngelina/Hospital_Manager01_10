@@ -41,17 +41,16 @@
 
         <select name="sortOrder" class="form-control">
             <option value="name"
-                selected="@(ViewBag.SortOrder=="name")">name</option>
-        </select>
-        <select name="beds_asc" class="form-control">
-            <option value="name"
+                selected="@(ViewBag.SortOrder=="name")">name a-z</option>
+            <option value="beds_asc"
                     selected="@(ViewBag.SortOrder == "beds_asc")">beds asc</option>
-        </select>
-        <select name="sortOrder" class="form-control">
             <option value="beds_desc"
                     selected="@(ViewBag.SortOrder == "beds_desc")">beds desc</option>
         </select>
-
+       
+    </div>
+    <div class="col-md-2 d-flex align-items-end" >
+       <button type="submit" class="btn btn-primary">Search</button>
     </div>
 </form>
 
